@@ -88,13 +88,10 @@ cv2.destroyAllWindows()
 frame = 0
 while ret:
 	skipping = False
-	# cut_copy = copy.deepcopy(cut)
-	# mask_copy = copy.deepcopy(mask)
 	print 'Current Frame: '+ str(frame)
 	ret, body_frame = cap_b.read()
 	if not ret:
 		break
-	# face_gray = cv2.cvtColor(body_frame, cv2.COLOR_BGR2GRAY)
 	face_dets = detector(body_frame, 1)
 	for (i, face) in enumerate(face_dets):
 		# face = face.rect
@@ -116,31 +113,10 @@ while ret:
 		morphed_mask[(cut[:,:,0]==0)&(cut[:,:,1]==0)&(cut[:,:,2]==0)] = 0
 		center = utils.bounding_center(shape)
 
-		# center = (body_frame.shape[1]/2, body_frame.shape[0]/2)
-		# center = utils.centroid(shape)
-		# cv2.imshow('cut', morphed_face.astype(np.uint8))
-		# cv2.waitKey(0)
-		# cv2.imshow('morphed_mask_multi', morphed_mask_multi.astype(np.uint8))
-		# cv2.waitKey(0)
 		body_frame_with_head = np.copy(body_frame)
 		body_frame_with_head[morphed_mask>0] = cut[morphed_mask>0]*alpha + body_frame_with_head[morphed_mask>0]*(1-alpha)
 		body_frame = cv2.seamlessClone(body_frame_with_head, body_frame, morphed_mask_multi, center, cv2.NORMAL_CLONE)
-		cv2.namedWindow('blended', cv2.WINDOW_NORMAL)
-		cv2.moveWindow('blended',400,500)
-		cv2.imshow('blended', body_frame.astype(np.uint8))
-		cv2.imwrite('blended.jpg', body_frame.astype(np.uint8))
-		cv2.waitKey(0)
-		# winname = 'mask'
-		# cv2.namedWindow(winname, cv2.WINDOW_NORMAL)
-		# cv2.moveWindow(winname, 400,500)
-		# cv2.imshow(winname, body_frame_with_head)
-		# cv2.waitKey(0)
-		# cv2.imshow(winname, body_frame)
-		# cv2.waitKey(0)
-		# cv2.destroyAllWindows()
-			# utils.centroid(shape), cv2.NORMAL_CLONE)
-	# out.write(body_frame)
-	# frame_out = cv2.cvtColor(body_frame, cv2.COLOR_BGR2RGB)
+
 	frame = frame + 1
 	if skipping:
 		continue
